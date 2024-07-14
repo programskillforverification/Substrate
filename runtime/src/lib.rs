@@ -279,6 +279,11 @@ impl pallet_use_storage::Config for Runtime {
 	type WeightInfo = ();
 }
 
+impl pallet_events_errors::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type WeightInfo = pallet_events_errors::weights::SubstrateWeight<Runtime>;
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 #[frame_support::runtime]
 mod runtime {
@@ -329,6 +334,9 @@ mod runtime {
 
 	#[runtime::pallet_index(10)]
 	pub type UseStorage = pallet_use_storage;
+
+	#[runtime::pallet_index(11)]
+	pub type EventsErrors = pallet_events_errors;
 }
 
 /// The address format for describing accounts.
