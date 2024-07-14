@@ -98,19 +98,26 @@ pub mod pallet {
 		) -> DispatchResult {
 			let _who = ensure_signed(origin)?;
 
-			// Read a value from storage.
-			match Class::<T>::get() {
-				// Return an error if the value has not been set.
-				None => Err(Error::<T>::NoneValue.into()),
-				Some(old) => {
-					// Increment the value read from storage. This will cause an error in the event
-					// of overflow.
-					let new = old.checked_add(1).ok_or(Error::<T>::StorageOverflow)?;
-					// Update the value in storage with the incremented result.
-					Class::<T>::put(new);
-					Ok(())
-				},
+			if !StudentInfo::<T>::contains_key(student_number) {
+				StudentInfo::<T>::insert(&student_number, &student_name);
+				Ok(())
+			} else {
+				Err(Error::<T>::NoneValue.into())
 			}
+		}
+
+		#[pallet::call_index(2)]
+		#[pallet::weight(T::WeightInfo::set_dorm_info())]
+		pub fn set_dorm_info(
+			origin: OriginFor<T>,
+			dorm_number: u32,
+			bed_number: u32,
+			student_number: u32,
+		) -> DispatchResult {
+			let _who = ensure_signed(origin)?;
+
+			DormInfo::<T>::insert(&dorm_number, &bed_number, &student_number);
+			Ok(())
 		}
 	}
 }
